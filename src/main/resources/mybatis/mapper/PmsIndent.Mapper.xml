@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paipianwang.pat.facade.indent.service.dao.impl.PmsIndentDaoImpl">
+
+	<!-- 产品信息表 -->
+	<sql id="pms_indent"> INDENT </sql>
+	
+	<resultMap type="PmsIndent" id="beanMap">
+		<id column="indentId" property="indentId" />
+		<result column="indentName" property="indentName" />
+	</resultMap>
+
+	<sql id="update_condition_sql">
+		<!-- Equal query -->
+		<if test="targetFileId != null and targetFileId != ''"> convertVideoUrl = #{targetFileId}</if>
+	</sql>
+
+	<select id="listBy" resultMap="beanMap">
+		SELECT 
+			PRODUCTNAME AS productName,
+			CONVERTVIDEOURL AS videoUrl
+		FROM
+			<include refid="pms_product" />
+		<where>
+			RECOMMEND > 0 
+			AND FLAG = 1
+		</where>
+	</select>
+	
+	<select id="all" resultType="PmsIndent">
+		SELECT 
+			PRODUCTNAME AS productName,
+			CONVERTVIDEOURL AS videoUrl
+		FROM <include refid="pms_indent" />
+	</select>
+	
+	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
+		SELECT 
+			PRODUCTNAME AS productName,
+			CONVERTVIDEOURL AS videoUrl
+		FROM
+			<include refid="pms_indent" />
+		<where>
+			RECOMMEND > 0 
+			AND FLAG = 1
+		</where>
+		
+		limit ${begin}, ${limit}
+	</select>
+	
+	<select id="listPageCount" parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT 
+			COUNT(1)
+		FROM 
+			<include refid="pms_indent" />
+		<where>
+			RECOMMEND > 0 
+			AND FLAG = 1
+		</where>
+	</select>
+</mapper>
