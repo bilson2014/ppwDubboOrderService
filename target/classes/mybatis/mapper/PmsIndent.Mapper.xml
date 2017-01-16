@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.paipianwang.pat.facade.indent.service.dao.impl.PmsIndentDaoImpl">
+<mapper
+	namespace="com.paipianwang.pat.facade.indent.service.dao.impl.PmsIndentDaoImpl">
 
 	<!-- 产品信息表 -->
 	<sql id="pms_indent"> INDENT </sql>
-	
+
 	<resultMap type="PmsIndent" id="beanMap">
-		<id column="indentId" property="indentId" />
+		<id column="indentId" property="id" />
 		<result column="indentName" property="indentName" />
+		<result column="indentNum" property="indentNum" />
+		<result column="indentType" property="indentType"/>
+		<result column="serviceId" property="serviceId" />
+		<result column="orderDate" property="orderDate" />
+		<result column="userId" property="userId" />
+		<result column="indentPrice" property="indentPrice" />
+		<result column="productId" property="productId" />
+		<result column="teamId" property="teamId" />
+		<result column="second" property="second" />
+		<result column="indent_tele" property="indent_tele" />
+		<result column="indent_recomment" property="indent_recomment" />
+		<result column="indent_description" property="indent_description" />
+		<result column="salesmanUniqueId" property="salesmanUniqueId" />
 	</resultMap>
 
 	<sql id="update_condition_sql">
@@ -15,47 +29,236 @@
 		<if test="targetFileId != null and targetFileId != ''"> convertVideoUrl = #{targetFileId}</if>
 	</sql>
 
-	<select id="listBy" resultMap="beanMap">
-		SELECT 
-			PRODUCTNAME AS productName,
-			CONVERTVIDEOURL AS videoUrl
-		FROM
-			<include refid="pms_product" />
-		<where>
-			RECOMMEND > 0 
-			AND FLAG = 1
-		</where>
-	</select>
-	
-	<select id="all" resultType="PmsIndent">
-		SELECT 
-			PRODUCTNAME AS productName,
-			CONVERTVIDEOURL AS videoUrl
-		FROM <include refid="pms_indent" />
-	</select>
-	
+
+
 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
-		SELECT 
-			PRODUCTNAME AS productName,
-			CONVERTVIDEOURL AS videoUrl
+		SELECT INDENTID AS id,
+		INDENTNAME AS indentName,
+		INDENTPRICE AS
+		indentPrice,
+		DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+		INDENTTYPE AS indentType,
+		INDENT_TELE AS indent_tele,
+		INDENT_RECOMMENT
+		AS indent_recomment,
+		INDENT_DESCRIPTION AS indent_description,
+		SALESMANUNIQUEID AS salesmanUniqueId
 		FROM
-			<include refid="pms_indent" />
+		<include refid="pms_indent" />
 		<where>
-			RECOMMEND > 0 
-			AND FLAG = 1
+			<if test="id != null and id != ''">
+				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
+			</if>
+			<if test="indentType != null and indentType != ''">
+				AND INDENTTYPE = ${indentType}
+			</if>
+			<if test="indent_tele != null and indent_tele != ''">
+				AND INDENT_TELE LIKE
+				CONCAT(CONCAT('%',#{indent_tele}),'%')
+			</if>
 		</where>
-		
+		ORDER BY
+		<if test="sort != null and sort != '' and order != null and order != ''">
+			${sort} ${order},
+		</if>
+		ORDERDATE desc
 		limit ${begin}, ${limit}
 	</select>
-	
-	<select id="listPageCount" parameterType="java.util.Map" resultType="java.lang.Long">
-		SELECT 
-			COUNT(1)
-		FROM 
-			<include refid="pms_indent" />
+
+	<select id="listPageCount" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		SELECT COUNT(1)
+		FROM
+		<include refid="pms_indent" />
 		<where>
-			RECOMMEND > 0 
-			AND FLAG = 1
+			<if test="id != null and id != ''">
+				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
+			</if>
+			<if test="indentType != null and indentType != ''">
+				AND INDENTTYPE = ${indentType}
+			</if>
+			<if test="indent_tele != null and indent_tele != ''">
+				AND INDENT_TELE LIKE
+				CONCAT(CONCAT('%',#{indent_tele}),'%')
+			</if>
+		</where>
+	</select>
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="beanMap">
+		SELECT INDENTID AS id,
+		INDENTNAME AS indentName,
+		INDENTPRICE AS
+		indentPrice,
+		DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+		INDENTTYPE AS indentType,
+		INDENT_TELE AS indent_tele,
+		INDENT_RECOMMENT
+		AS indent_recomment,
+		INDENT_DESCRIPTION AS indent_description,
+		SALESMANUNIQUEID AS salesmanUniqueId
+		FROM
+		<include refid="pms_indent" />
+		<where>
+			<if test="id != null and id != ''">
+				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
+			</if>
+			<if test="indentType != null and indentType != ''">
+				AND INDENTTYPE = ${indentType}
+			</if>
+			<if test="indent_tele != null and indent_tele != ''">
+				AND INDENT_TELE LIKE
+				CONCAT(CONCAT('%',#{indent_tele}),'%')
+			</if>
+		</where>
+		ORDER BY
+		<if test="sort != null and sort != '' and order != null and order != ''">
+			${sort} ${order},
+		</if>
+		ORDERDATE desc
+	</select>
+	<insert id="insert" parameterType="PmsIndent" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO
+		<include refid="pms_indent" />
+		(
+		INDENTNAME,
+		INDENTNUM,
+		INDENTTYPE,
+		SERVICEID,
+		INDENT_TELE,
+		INDENT_RECOMMENT,
+		INDENT_DESCRIPTION,
+		SALESMANUNIQUEID,
+		PRODUCTID,
+		INDENTPRICE,
+		TEAMID,
+		ORDERDATE
+		) VALUES (
+		#{indentName},
+		#{indentNum},
+		${indentType},
+		${serviceId},
+		#{indent_tele},
+		#{indent_recomment},
+		#{indent_description},
+		#{salesmanUniqueId},
+		${productId},
+		${indentPrice},
+		${teamId},
+		CURRENT_TIMESTAMP
+		)
+	</insert>
+	<insert id="saveOrder" parameterType="PmsIndent"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		<include refid="pms_indent" />
+		(
+		INDENTNAME,
+		TEAMID,
+		SERVICEID,
+		PRODUCTID,
+		INDENTPRICE,
+		SECOND,
+		INDENT_TELE,
+		INDENT_RECOMMENT,
+		SALESMANUNIQUEID
+		) VALUES (
+		#{indentName},
+		${teamId},
+		${serviceId},
+		${productId},
+		${indentPrice},
+		${second},
+		#{indent_tele},
+		#{indent_recomment},
+		#{salesmanUniqueId}
+		)
+	</insert>
+	<update id="update" parameterType="PmsIndent">
+		UPDATE
+		<include refid="pms_indent" />
+		<set>
+			INDENTNAME = #{indentName},
+			SECOND = #{second},
+			INDENTPRICE = ${indentPrice},
+			INDENTTYPE = ${indentType},
+			INDENT_TELE =#{indent_tele},
+			ORDERDATE = DATE_FORMAT(#{orderDate},'%Y-%m-%d %T'),
+			INDENT_RECOMMENT = #{indent_recomment},
+			INDENT_DESCRIPTION = #{indent_description},
+			SALESMANUNIQUEID = #{salesmanUniqueId}
+		</set>
+		<where>
+			INDENTID = #{id}
+		</where>
+	</update>
+
+	<delete id="deleteByIds">
+		DELETE FROM
+		<include refid="pms_indent" />
+		<where>
+			INDENTID IN
+			<if test="array != null and array != ''">
+				<foreach collection="array" open="(" close=")" item="item"
+					separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+
+	<update id="changeIndentsType">
+		UPDATE
+		<include refid="pms_indent" />
+		SET INDENTTYPE = ${indentType}
+		<where>
+			INDENTID IN
+			<if test="array != null and array != ''">
+				<foreach collection="array" open="(" close=")" item="item"
+					separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</update>
+	<select id="checkStatus" resultType="long">
+		SELECT COUNT(1)
+		FROM
+		<include refid="pms_indent" />
+		<where>
+			INDENTTYPE = #{indentType}
+		</where>
+
+	</select>
+	<update id="updateForCalculate">
+		UPDATE
+		<include refid="pms_indent" />
+		<set>
+			INDENT_RECOMMENT = #{indent_recomment},
+			INDENTPRICE =
+			${indentPrice},
+			ORDERDATE = CURRENT_TIMESTAMP
+		</set>
+		<where>
+			INDENTID = #{id}
+		</where>
+	</update>
+
+	<select id="countBySalesmanUniqueId" resultType="long">
+		SELECT COUNT(1)
+		FROM
+		<include refid="pms_indent" />
+		<where>
+			SALESMANUNIQUEID = #{salesmanUniqueId}
+		</where>
+	</select>
+
+	<select id="sumPriceBySalesmanUniqueId" resultType="Double">
+		SELECT SUM(INDENTPRICE)
+		FROM 
+		<include refid="pms_indent" />
+		<where>
+			SALESMANUNIQUEID = #{salesmanUniqueId}
 		</where>
 	</select>
 </mapper>
