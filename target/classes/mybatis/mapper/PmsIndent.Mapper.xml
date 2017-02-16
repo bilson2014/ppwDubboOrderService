@@ -10,7 +10,7 @@
 		<id column="indentId" property="id" />
 		<result column="indentName" property="indentName" />
 		<result column="indentNum" property="indentNum" />
-		<result column="indentType" property="indentType"/>
+		<result column="indentType" property="indentType" />
 		<result column="serviceId" property="serviceId" />
 		<result column="orderDate" property="orderDate" />
 		<result column="userId" property="userId" />
@@ -28,8 +28,6 @@
 		<!-- Equal query -->
 		<if test="targetFileId != null and targetFileId != ''"> convertVideoUrl = #{targetFileId}</if>
 	</sql>
-
-
 
 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
 		SELECT INDENTID AS id,
@@ -56,6 +54,14 @@
 				AND INDENT_TELE LIKE
 				CONCAT(CONCAT('%',#{indent_tele}),'%')
 			</if>
+			<if test="beginTime != null and beginTime != '' ">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &gt;=
+				#{beginTime}
+			</if>
+			<if test="endTime != null  and endTime != ''">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;=
+				#{endTime}
+			</if>
 		</where>
 		ORDER BY
 		<if test="sort != null and sort != '' and order != null and order != ''">
@@ -80,6 +86,14 @@
 			<if test="indent_tele != null and indent_tele != ''">
 				AND INDENT_TELE LIKE
 				CONCAT(CONCAT('%',#{indent_tele}),'%')
+			</if>
+			<if test="beginTime != null and beginTime != '' ">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &gt;=
+				#{beginTime}
+			</if>
+			<if test="endTime != null  and endTime != ''">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;=
+				#{endTime}
 			</if>
 		</where>
 	</select>
@@ -180,12 +194,15 @@
 		<set>
 			INDENTNAME = #{indentName},
 			SECOND = #{second},
-			INDENTPRICE = ${indentPrice},
+			INDENTPRICE =
+			${indentPrice},
 			INDENTTYPE = ${indentType},
-			INDENT_TELE =#{indent_tele},
+			INDENT_TELE
+			=#{indent_tele},
 			ORDERDATE = DATE_FORMAT(#{orderDate},'%Y-%m-%d %T'),
 			INDENT_RECOMMENT = #{indent_recomment},
-			INDENT_DESCRIPTION = #{indent_description},
+			INDENT_DESCRIPTION =
+			#{indent_description},
 			SALESMANUNIQUEID = #{salesmanUniqueId}
 		</set>
 		<where>
@@ -255,7 +272,7 @@
 
 	<select id="sumPriceBySalesmanUniqueId" resultType="Double">
 		SELECT SUM(INDENTPRICE)
-		FROM 
+		FROM
 		<include refid="pms_indent" />
 		<where>
 			SALESMANUNIQUEID = #{salesmanUniqueId}
