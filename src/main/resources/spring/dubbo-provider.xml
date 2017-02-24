@@ -17,6 +17,5 @@
 	<dubbo:protocol name="dubbo" port="24880" />
 		
 	<!-- 用户服务接口 -->
-	<dubbo:service interface="com.paipianwang.pat.facade.indent.service.PmsIndentFacade" ref="pmsIndentFacade"  />
-
+	<dubbo:service interface="com.paipianwang.pat.facade.indent.service.PmsIndentFacade" ref="pmsIndentFacade" retries="2" />
 </beans>  
