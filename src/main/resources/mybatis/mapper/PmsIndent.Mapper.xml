@@ -227,8 +227,8 @@
 		<include refid="pms_indent" />
 		<where>
 			INDENTID IN
-			<if test="array != null and array != ''">
-				<foreach collection="array" open="(" close=")" item="item"
+			<if test="ids != null and ids != ''">
+				<foreach collection="ids" open="(" close=")" item="item"
 					separator=",">
 					#{item}
 				</foreach>
