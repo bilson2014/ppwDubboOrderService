@@ -1,4 +1,4 @@
-package com.paipianwang.service.product.test;
+/*package com.paipianwang.service.product.test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,3 +105,4 @@ public class IndentTest extends BaseTestAction {
 		System.err.println(result);
 	}
 }
+*/
