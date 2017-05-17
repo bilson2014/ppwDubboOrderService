@@ -14,7 +14,6 @@
 		<result column="indentType" property="indentType" />
 		<result column="serviceId" property="serviceId" />
 		<result column="orderDate" property="orderDate" />
-		<result column="userId" property="userId" />
 		<result column="indentPrice" property="indentPrice" />
 		<result column="productId" property="productId" />
 		<result column="teamId" property="teamId" />
@@ -23,6 +22,13 @@
 		<result column="indent_recomment" property="indent_recomment" />
 		<result column="indent_description" property="indent_description" />
 		<result column="salesmanUniqueId" property="salesmanUniqueId" />
+
+		<result column="userId" property="userId" />
+		<result column="userCompany" property="userCompany" />
+		<result column="realName" property="realName" />
+		<result column="wechat" property="wechat" />
+		<result column="position" property="position" />
+		<result column="requireId" property="requireId" />
 	</resultMap>
 
 	<sql id="update_condition_sql">
@@ -33,7 +39,8 @@
 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
 		SELECT INDENTID AS id,
 		INDENTNAME AS indentName,
-		INDENTPRICE AS indentPrice,
+		INDENTPRICE AS
+		indentPrice,
 		DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
 		INDENTTYPE AS indentType,
 		INDENT_TELE AS indent_tele,
@@ -41,12 +48,21 @@
 		AS indent_recomment,
 		INDENT_DESCRIPTION AS indent_description,
 		SALESMANUNIQUEID AS salesmanUniqueId,
-		sale.SALESMANNAME AS salesmanName
+		sale.SALESMANNAME AS salesmanName,
+		ind.EMPLOYEEID AS employeeId,
+		ind.USERID AS userId,
+		ind.USERCOMPANY AS userCompany,
+		ind.REALNAME AS realName,
+		ind.WECHAT AS wechat,
+		ind.POSITION AS position,
+		ind.REQUIREID AS requireId
 		FROM
-		<include refid="pms_indent" /> ind 
-		LEFT JOIN 
-		<include refid="pms_salesman" /> sale 
-			ON ind.salesmanUniqueId = sale.uniqueId
+		<include refid="pms_indent" />
+		ind
+		LEFT JOIN
+		<include refid="pms_salesman" />
+		sale
+		ON ind.salesmanUniqueId = sale.uniqueId
 		<where>
 			<if test="id != null and id != ''">
 				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
@@ -65,6 +81,9 @@
 			<if test="endTime != null  and endTime != ''">
 				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;=
 				#{endTime}
+			</if>
+			<if test="employeeId != null  and employeeId != ''">
+				AND EMPLOYEEID = #{employeeId}
 			</if>
 		</where>
 		ORDER BY
@@ -206,16 +225,31 @@
 		<set>
 			INDENTNAME = #{indentName},
 			SECOND = #{second},
-			INDENTPRICE =
-			${indentPrice},
+			INDENTPRICE = ${indentPrice},
 			INDENTTYPE = ${indentType},
-			INDENT_TELE
-			=#{indent_tele},
+			INDENT_TELE =#{indent_tele},
 			ORDERDATE = DATE_FORMAT(#{orderDate},'%Y-%m-%d %T'),
 			INDENT_RECOMMENT = #{indent_recomment},
-			INDENT_DESCRIPTION =
-			#{indent_description},
-			SALESMANUNIQUEID = #{salesmanUniqueId}
+			INDENT_DESCRIPTION = #{indent_description},
+			SALESMANUNIQUEID = #{salesmanUniqueId},
+			<if test="userId != null and userId !=''">
+				USERID = #{userId},			
+			</if>
+			<if test="realName != null and realName !=''">
+				REALNAME = #{realName},		
+			</if>
+			<if test="wechat != null and wechat !=''">
+				WECHAT = #{wechat},	
+			</if>
+			<if test="userCompany != null and userCompany !=''">
+				USERCOMPANY = #{userCompany},	
+			</if>
+			<if test="position != null">
+				POSITION = #{position},	
+			</if>
+			<if test="requireId != null and requireId !=''">
+				REQUIREID = #{requireId}
+			</if>
 		</set>
 		<where>
 			INDENTID = #{id}
@@ -272,6 +306,16 @@
 			INDENTID = #{id}
 		</where>
 	</update>
+	<update id="updateCustomerService">
+		UPDATE
+		<include refid="pms_indent" />
+		<set>
+			employeeId = #{employeeId}
+		</set>
+		<where>
+			INDENTID = #{indentId}
+		</where>
+	</update>
 
 	<select id="countBySalesmanUniqueId" resultType="long">
 		SELECT COUNT(1)
@@ -290,4 +334,5 @@
 			SALESMANUNIQUEID = #{salesmanUniqueId}
 		</where>
 	</select>
+
 </mapper>

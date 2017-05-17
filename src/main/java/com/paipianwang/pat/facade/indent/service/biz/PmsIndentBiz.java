@@ -92,4 +92,12 @@ public class PmsIndentBiz {
 	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
 		return pmsIndentDao.sumPriceBySalesmanUniqueId(salesmanUniqueId);
 	}
+	/**
+	 * 更新订单客服
+	 * @param indent
+	 * @return
+	 */
+	public long updateCustomerService(PmsIndent indent) {
+		return pmsIndentDao.updateCustomerService(indent);
+	}
 }
