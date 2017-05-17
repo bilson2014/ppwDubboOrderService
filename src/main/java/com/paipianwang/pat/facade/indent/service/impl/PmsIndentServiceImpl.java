@@ -117,4 +117,9 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
 		return biz.sumPriceBySalesmanUniqueId(salesmanUniqueId);
 	}
+
+	@Override
+	public long updateCustomerService(PmsIndent indent) {
+		return biz.updateCustomerService(indent);
+	}
 }

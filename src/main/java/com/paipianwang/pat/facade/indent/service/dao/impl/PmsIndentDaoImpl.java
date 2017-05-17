@@ -15,18 +15,21 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 
 	@Autowired
 	private SqlSessionTemplate sessionTemplate = null;
-	
+
 	public static final String SQL_CHANGE_INDENT_TYPE = "changeIndentsType";
-	
+
 	public static final String SQL_SAVE_ORDER = "saveOrder";
-	
+
 	public static final String SQL_CHECK_STATUS = "checkStatus";
-	
+
 	public static final String SQL_UPDATE_FOR_CALCULATE = "updateForCalculate";
-	
+
 	public static final String SQL_COUNT_SALEMAN = "countBySalesmanUniqueId";
-	
+
 	public static final String SQL_SUMPRICE_SALESMAN = "sumPriceBySalesmanUniqueId";
+
+	public static final String SQL_UPDATE_CUSTOMERSERVICE = "updateCustomerService";
+
 	/**
 	 * 根据订单id数组，批量修改订单状态
 	 */
@@ -34,6 +37,7 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	public long changeIndentsType(Map<String, Object> map) {
 		return sessionTemplate.update(getStatement(SQL_CHANGE_INDENT_TYPE), map);
 	}
+
 	/**
 	 * 前端下单
 	 */
@@ -41,6 +45,7 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	public long saveOrder(PmsIndent indent) {
 		return sessionTemplate.insert(getStatement(SQL_SAVE_ORDER), indent);
 	}
+
 	/**
 	 * 检测某状态的订单个数
 	 */
@@ -48,6 +53,7 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	public long checkStatus(int indentType) {
 		return sessionTemplate.selectOne(getStatement(SQL_CHECK_STATUS), indentType);
 	}
+
 	/**
 	 * 更新成本计算器订单
 	 */
@@ -55,15 +61,20 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	public long updateForCalculate(PmsIndent indent) {
 		return sessionTemplate.update(getStatement(SQL_UPDATE_FOR_CALCULATE), indent);
 	}
+
 	@Override
 	public long countBySalesmanUniqueId(String salesmanUniqueId) {
 		return sessionTemplate.selectOne(getStatement(SQL_COUNT_SALEMAN), salesmanUniqueId);
 	}
+
 	@Override
 	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
 		return sessionTemplate.selectOne(getStatement(SQL_SUMPRICE_SALESMAN), salesmanUniqueId);
 	}
 
-	
+	@Override
+	public long updateCustomerService(PmsIndent indent) {
+		return sessionTemplate.update(getStatement(SQL_UPDATE_CUSTOMERSERVICE),indent);
+	}
 
 }
