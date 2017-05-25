@@ -29,6 +29,7 @@
 		<result column="wechat" property="wechat" />
 		<result column="position" property="position" />
 		<result column="requireId" property="requireId" />
+		<result column="pMId" property="pMId" />
 	</resultMap>
 
 	<sql id="update_condition_sql">
@@ -38,24 +39,24 @@
 
 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
 		SELECT INDENTID AS id,
-		INDENTNAME AS indentName,
-		INDENTPRICE AS
-		indentPrice,
-		DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
-		INDENTTYPE AS indentType,
-		INDENT_TELE AS indent_tele,
-		INDENT_RECOMMENT
-		AS indent_recomment,
-		INDENT_DESCRIPTION AS indent_description,
-		SALESMANUNIQUEID AS salesmanUniqueId,
-		sale.SALESMANNAME AS salesmanName,
-		ind.EMPLOYEEID AS employeeId,
-		ind.USERID AS userId,
-		ind.USERCOMPANY AS userCompany,
-		ind.REALNAME AS realName,
-		ind.WECHAT AS wechat,
-		ind.POSITION AS position,
-		ind.REQUIREID AS requireId
+			INDENTNAME AS indentName,
+			INDENTPRICE AS
+			indentPrice,
+			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			INDENTTYPE AS indentType,
+			INDENT_TELE AS indent_tele,
+			INDENT_RECOMMENT AS indent_recomment,
+			INDENT_DESCRIPTION AS indent_description,
+			SALESMANUNIQUEID AS salesmanUniqueId,
+			sale.SALESMANNAME AS salesmanName,
+			ind.EMPLOYEEID AS employeeId,
+			ind.USERID AS userId,
+			ind.USERCOMPANY AS userCompany,
+			ind.REALNAME AS realName,
+			ind.WECHAT AS wechat,
+			ind.POSITION AS position,
+			ind.REQUIREID AS requireId,
+			ind.pMId AS pMId
 		FROM
 		<include refid="pms_indent" />
 		ind
@@ -67,7 +68,7 @@
 			<if test="id != null and id != ''">
 				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
 			</if>
-			<if test="indentType != null and indentType != ''">
+			<if test="indentType != null">
 				AND INDENTTYPE = ${indentType}
 			</if>
 			<if test="indent_tele != null and indent_tele != ''">
@@ -123,16 +124,14 @@
 
 	<select id="listBy" parameterType="java.util.Map" resultMap="beanMap">
 		SELECT INDENTID AS id,
-		INDENTNAME AS indentName,
-		INDENTPRICE AS
-		indentPrice,
-		DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
-		INDENTTYPE AS indentType,
-		INDENT_TELE AS indent_tele,
-		INDENT_RECOMMENT
-		AS indent_recomment,
-		INDENT_DESCRIPTION AS indent_description,
-		SALESMANUNIQUEID AS salesmanUniqueId
+			INDENTNAME AS indentName,
+			INDENTPRICE AS indentPrice,
+			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			INDENTTYPE AS indentType,
+			INDENT_TELE AS indent_tele,
+			INDENT_RECOMMENT AS indent_recomment,
+			INDENT_DESCRIPTION AS indent_description,
+			SALESMANUNIQUEID AS salesmanUniqueId
 		FROM
 		<include refid="pms_indent" />
 		<where>
@@ -166,31 +165,31 @@
 		INSERT INTO
 		<include refid="pms_indent" />
 		(
-		INDENTNAME,
-		INDENTNUM,
-		INDENTTYPE,
-		SERVICEID,
-		INDENT_TELE,
-		INDENT_RECOMMENT,
-		INDENT_DESCRIPTION,
-		SALESMANUNIQUEID,
-		PRODUCTID,
-		INDENTPRICE,
-		TEAMID,
-		ORDERDATE
+			INDENTNAME,
+			INDENTNUM,
+			INDENTTYPE,
+			SERVICEID,
+			INDENT_TELE,
+			INDENT_RECOMMENT,
+			INDENT_DESCRIPTION,
+			SALESMANUNIQUEID,
+			PRODUCTID,
+			INDENTPRICE,
+			TEAMID,
+			ORDERDATE
 		) VALUES (
-		#{indentName},
-		#{indentNum},
-		${indentType},
-		${serviceId},
-		#{indent_tele},
-		#{indent_recomment},
-		#{indent_description},
-		#{salesmanUniqueId},
-		${productId},
-		${indentPrice},
-		${teamId},
-		CURRENT_TIMESTAMP
+			#{indentName},
+			#{indentNum},
+			${indentType},
+			${serviceId},
+			#{indent_tele},
+			#{indent_recomment},
+			#{indent_description},
+			#{salesmanUniqueId},
+			${productId},
+			${indentPrice},
+			${teamId},
+			CURRENT_TIMESTAMP
 		)
 	</insert>
 	<insert id="saveOrder" parameterType="PmsIndent"
@@ -198,25 +197,25 @@
 		INSERT INTO
 		<include refid="pms_indent" />
 		(
-		INDENTNAME,
-		TEAMID,
-		SERVICEID,
-		PRODUCTID,
-		INDENTPRICE,
-		SECOND,
-		INDENT_TELE,
-		INDENT_RECOMMENT,
-		SALESMANUNIQUEID
+			INDENTNAME,
+			TEAMID,
+			SERVICEID,
+			PRODUCTID,
+			INDENTPRICE,
+			SECOND,
+			INDENT_TELE,
+			INDENT_RECOMMENT,
+			SALESMANUNIQUEID
 		) VALUES (
-		#{indentName},
-		${teamId},
-		${serviceId},
-		${productId},
-		${indentPrice},
-		${second},
-		#{indent_tele},
-		#{indent_recomment},
-		#{salesmanUniqueId}
+			#{indentName},
+			${teamId},
+			${serviceId},
+			${productId},
+			${indentPrice},
+			${second},
+			#{indent_tele},
+			#{indent_recomment},
+			#{salesmanUniqueId}
 		)
 	</insert>
 	<update id="update" parameterType="PmsIndent">
@@ -248,7 +247,10 @@
 				POSITION = #{position},	
 			</if>
 			<if test="requireId != null and requireId !=''">
-				REQUIREID = #{requireId}
+				REQUIREID = #{requireId},
+			</if>
+			<if test="pMId != null and pMId !=''">
+				pMId = #{pMId}
 			</if>
 		</set>
 		<where>
@@ -316,6 +318,17 @@
 			INDENTID = #{indentId}
 		</where>
 	</update>
+	
+	<update id="rejected">
+		UPDATE
+		<include refid="pms_indent" />
+		<set>
+			INDENTTYPE = ${indentType}
+		</set>
+		<where>
+			INDENTID = #{indentId}
+		</where>
+	</update>
 
 	<select id="countBySalesmanUniqueId" resultType="long">
 		SELECT COUNT(1)
@@ -334,5 +347,59 @@
 			SALESMANUNIQUEID = #{salesmanUniqueId}
 		</where>
 	</select>
-
+	
+	<select id="getById" resultMap="beanMap">
+		SELECT 
+			INDENTID AS id,
+			INDENTNAME AS indentName,
+			INDENTPRICE AS indentPrice,
+			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			INDENTTYPE AS indentType,
+			INDENT_TELE AS indent_tele,
+			INDENT_RECOMMENT AS indent_recomment,
+			INDENT_DESCRIPTION AS indent_description,
+			SALESMANUNIQUEID AS salesmanUniqueId,
+			ind.EMPLOYEEID AS employeeId,
+			ind.USERID AS userId,
+			ind.USERCOMPANY AS userCompany,
+			ind.REALNAME AS realName,
+			ind.WECHAT AS wechat,
+			ind.POSITION AS position,
+			ind.REQUIREID AS requireId,
+			ind.pMId AS pMId
+		FROM
+		<include refid="pms_indent" />
+			ind
+		<where>
+			INDENTID  = #{id}
+		</where>
+	</select>
+	
+	<select id="findIndentByRequireId" resultMap="beanMap">
+		SELECT 
+			INDENTID AS id,
+			INDENTNAME AS indentName,
+			INDENTPRICE AS indentPrice,
+			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			INDENTTYPE AS indentType,
+			INDENT_TELE AS indent_tele,
+			INDENT_RECOMMENT AS indent_recomment,
+			INDENT_DESCRIPTION AS indent_description,
+			SALESMANUNIQUEID AS salesmanUniqueId,
+			ind.EMPLOYEEID AS employeeId,
+			ind.USERID AS userId,
+			ind.USERCOMPANY AS userCompany,
+			ind.REALNAME AS realName,
+			ind.WECHAT AS wechat,
+			ind.POSITION AS position,
+			ind.REQUIREID AS requireId,
+			ind.pMId AS pMId
+		FROM
+		<include refid="pms_indent" />
+			ind
+		<where>
+			INDENTID = #{id}
+		</where>
+	</select>
+	
 </mapper>

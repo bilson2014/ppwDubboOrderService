@@ -23,12 +23,16 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	public static final String SQL_CHECK_STATUS = "checkStatus";
 
 	public static final String SQL_UPDATE_FOR_CALCULATE = "updateForCalculate";
+	
+	public static final String SQL_UPDATE_REJECTED = "rejected";
 
 	public static final String SQL_COUNT_SALEMAN = "countBySalesmanUniqueId";
 
 	public static final String SQL_SUMPRICE_SALESMAN = "sumPriceBySalesmanUniqueId";
 
 	public static final String SQL_UPDATE_CUSTOMERSERVICE = "updateCustomerService";
+
+	public static final String SQL_GET_INDENTBYREQUIREID = "findIndentByRequireId";
 
 	/**
 	 * 根据订单id数组，批量修改订单状态
@@ -74,7 +78,17 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 
 	@Override
 	public long updateCustomerService(PmsIndent indent) {
-		return sessionTemplate.update(getStatement(SQL_UPDATE_CUSTOMERSERVICE),indent);
+		return sessionTemplate.update(getStatement(SQL_UPDATE_CUSTOMERSERVICE), indent);
+	}
+
+	@Override
+	public PmsIndent findIndentByRequireId(long id) {
+		return sessionTemplate.selectOne(getStatement(SQL_GET_INDENTBYREQUIREID), id);
+	}
+
+	@Override
+	public long rejected(PmsIndent indent) {
+		return sessionTemplate.update(getStatement(SQL_UPDATE_REJECTED), indent);
 	}
 
 }

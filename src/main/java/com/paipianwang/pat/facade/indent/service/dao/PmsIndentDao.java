@@ -58,4 +58,14 @@ public interface PmsIndentDao extends BaseDao<PmsIndent> {
 	 */
 	long updateCustomerService(PmsIndent indent);
 
+	/**
+	 * 根基需求ID查询订单
+	 * 
+	 * @param id
+	 * @return
+	 */
+	PmsIndent findIndentByRequireId(long id);
+
+	long rejected(PmsIndent indent);
+
 }

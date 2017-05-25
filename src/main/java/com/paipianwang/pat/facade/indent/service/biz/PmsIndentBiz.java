@@ -100,4 +100,13 @@ public class PmsIndentBiz {
 	public long updateCustomerService(PmsIndent indent) {
 		return pmsIndentDao.updateCustomerService(indent);
 	}
+	public PmsIndent findIndentById(long id) {
+		return pmsIndentDao.getById(id);
+	}
+	public PmsIndent findIndentByRequireId(long id) {
+		return pmsIndentDao.findIndentByRequireId(id);
+	}
+	public long rejected(PmsIndent indent) {
+		return pmsIndentDao.rejected(indent);
+	}
 }

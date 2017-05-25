@@ -14,6 +14,7 @@ import com.paipianwang.pat.facade.indent.service.biz.PmsIndentBiz;
 
 /**
  * 订单Dubbo服务接口实现
+ * 
  * @author Jack
  * @version 1.0
  *
@@ -23,12 +24,12 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 
 	@Autowired
 	private final PmsIndentBiz biz = null;
-	
+
 	/**
 	 * 后台DataGride 查询订单列表(含条件)
 	 */
 	public DataGrid<PmsIndent> listWithPagination(PageParam pageParam, Map<String, Object> paramMap) {
-		return biz.listWithPagination(pageParam,paramMap);
+		return biz.listWithPagination(pageParam, paramMap);
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	 * 后台批量修改订单状态
 	 */
 	@Override
-	public boolean changeIndentsType(long[] ids,int indentType) {
+	public boolean changeIndentsType(long[] ids, int indentType) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("array", ids);
 		map.put("indentType", indentType);
@@ -81,11 +82,9 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	public boolean saveOrder(PmsIndent indent) {
 		return biz.saveOrder(indent) > 0;
 	}
-	
 
 	/**
-	 * 检测某种状态订单的个数
-	 * status 状态
+	 * 检测某种状态订单的个数 status 状态
 	 */
 	@Override
 	public long checkStatus(int status) {
@@ -102,7 +101,9 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 
 	/**
 	 * 查询某人订单总数
-	 * @param salesmanUniqueId 某人唯一标识
+	 * 
+	 * @param salesmanUniqueId
+	 *            某人唯一标识
 	 */
 	@Override
 	public long countBySalesmanUniqueId(String salesmanUniqueId) {
@@ -111,7 +112,9 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 
 	/**
 	 * 查询某人订单总金额
-	 * @param salesmanUniqueId 某人唯一标识
+	 * 
+	 * @param salesmanUniqueId
+	 *            某人唯一标识
 	 */
 	@Override
 	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
@@ -121,5 +124,20 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	@Override
 	public long updateCustomerService(PmsIndent indent) {
 		return biz.updateCustomerService(indent);
+	}
+
+	@Override
+	public PmsIndent findIndentById(long id) {
+		return biz.findIndentById(id);
+	}
+
+	@Override
+	public PmsIndent findIndentByRequireId(long id) {
+		return biz.findIndentByRequireId(id);
+	}
+
+	@Override
+	public long rejected(PmsIndent indent) {
+		return biz.rejected(indent);
 	}
 }
