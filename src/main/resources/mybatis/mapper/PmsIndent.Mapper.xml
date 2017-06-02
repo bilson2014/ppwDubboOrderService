@@ -30,6 +30,8 @@
 		<result column="position" property="position" />
 		<result column="requireId" property="requireId" />
 		<result column="pMId" property="pMId" />
+		<result column="cSRecomment" property="cSRecomment" />
+		<result column="pMRecomment" property="pMRecomment" />
 	</resultMap>
 
 	<sql id="update_condition_sql">
@@ -56,7 +58,9 @@
 			ind.WECHAT AS wechat,
 			ind.POSITION AS position,
 			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId
+			ind.pMId AS pMId,
+			ind.CSRecomment AS cSRecomment,
+			ind.PMRecomment AS pMRecomment
 		FROM
 		<include refid="pms_indent" />
 		ind
@@ -250,7 +254,13 @@
 				REQUIREID = #{requireId},
 			</if>
 			<if test="pMId != null and pMId !=''">
-				pMId = #{pMId}
+				pMId = #{pMId},
+			</if>
+			<if test="cSRecomment != null and cSRecomment !=''">
+				CSRecomment = #{cSRecomment},
+			</if>
+			<if test="pMRecomment != null and pMRecomment !=''">
+				PMRecomment = #{pMRecomment}
 			</if>
 		</set>
 		<where>
@@ -300,8 +310,7 @@
 		<include refid="pms_indent" />
 		<set>
 			INDENT_RECOMMENT = #{indent_recomment},
-			INDENTPRICE =
-			${indentPrice},
+			INDENTPRICE = ${indentPrice},
 			ORDERDATE = CURRENT_TIMESTAMP
 		</set>
 		<where>
@@ -366,7 +375,9 @@
 			ind.WECHAT AS wechat,
 			ind.POSITION AS position,
 			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId
+			ind.pMId AS pMId,
+			ind.CSRecomment AS cSRecomment,
+			ind.PMRecomment AS pMRecomment
 		FROM
 		<include refid="pms_indent" />
 			ind
@@ -393,7 +404,9 @@
 			ind.WECHAT AS wechat,
 			ind.POSITION AS position,
 			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId
+			ind.pMId AS pMId,
+			ind.CSRecomment AS cSRecomment,
+			ind.PMRecomment AS pMRecomment
 		FROM
 		<include refid="pms_indent" />
 			ind
