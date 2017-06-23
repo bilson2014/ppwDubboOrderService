@@ -32,6 +32,8 @@
 		<result column="pMId" property="pMId" />
 		<result column="cSRecomment" property="cSRecomment" />
 		<result column="pMRecomment" property="pMRecomment" />
+		<result column="indentSource" property="indentSource" />
+		<result column="referrerId" property="referrerId" />
 	</resultMap>
 
 	<sql id="update_condition_sql">
@@ -40,27 +42,29 @@
 	</sql>
 
 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
-		SELECT INDENTID AS id,
-			INDENTNAME AS indentName,
-			INDENTPRICE AS
-			indentPrice,
-			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
-			INDENTTYPE AS indentType,
-			INDENT_TELE AS indent_tele,
-			INDENT_RECOMMENT AS indent_recomment,
-			INDENT_DESCRIPTION AS indent_description,
-			SALESMANUNIQUEID AS salesmanUniqueId,
-			sale.SALESMANNAME AS salesmanName,
-			ind.EMPLOYEEID AS employeeId,
-			ind.USERID AS userId,
-			ind.USERCOMPANY AS userCompany,
-			ind.REALNAME AS realName,
-			ind.WECHAT AS wechat,
-			ind.POSITION AS position,
-			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId,
-			ind.CSRecomment AS cSRecomment,
-			ind.PMRecomment AS pMRecomment
+		SELECT
+			    INDENTID AS id,
+				INDENTNAME AS indentName,
+				INDENTPRICE AS indentPrice,
+				DATE_FORMAT(ORDERDATE, '%Y-%m-%d %T') AS orderDate,
+				INDENTTYPE AS indentType,
+				INDENT_TELE AS indent_tele,
+				INDENT_RECOMMENT AS indent_recomment,
+				INDENT_DESCRIPTION AS indent_description,
+				SALESMANUNIQUEID AS salesmanUniqueId,
+				sale.SALESMANNAME AS salesmanName,
+				ind.EMPLOYEEID AS employeeId,
+				ind.USERID AS userId,
+				IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+				IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+				IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+				IF(ind.userId,us.position,ind.POSITION) AS position,
+				ind.REQUIREID AS requireId,
+				ind.CSRecomment AS cSRecomment,
+				ind.PMRecomment AS pMRecomment,
+				ind.indentSource AS indentSource,
+				ind.referrerId AS referrerId,
+		  		ind.pMId AS pMId
 		FROM
 		<include refid="pms_indent" />
 		ind
@@ -68,12 +72,75 @@
 		<include refid="pms_salesman" />
 		sale
 		ON ind.salesmanUniqueId = sale.uniqueId
+		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
 			<if test="id != null and id != ''">
 				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
 			</if>
 			<if test="indentType != null">
 				AND INDENTTYPE = ${indentType}
+			</if>
+			<if test="indentType == null and types != null">
+				AND INDENTTYPE IN
+				<foreach collection="types" open="(" close=")" item="item"
+						separator=",">
+						#{item}
+				</foreach>	
+			</if>
+			<if test="indent_tele != null and indent_tele != ''">
+				AND INDENT_TELE LIKE
+				CONCAT(CONCAT('%',#{indent_tele}),'%')
+			</if>
+			<if test="beginTime != null and beginTime != '' ">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &gt;=
+				#{beginTime}
+			</if>
+			<if test="endTime != null  and endTime != ''">
+				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;= #{endTime}
+			</if>
+			<if test="employeeId != null  and employeeId != ''">
+				AND EMPLOYEEID = #{employeeId}
+			</if>
+			<if test="indentSource != null and indentSource != -1">
+				AND INDENTSOURCE = #{indentSource}
+			</if>
+			<if test="userCompany != null  and userCompany != ''">
+				AND IFNULL(us.userCompany,ind.USERCOMPANY) LIKE
+				CONCAT(CONCAT('%',#{userCompany}),'%')
+			</if>
+			<if test="realName != null  and realName != ''">
+				AND IFNULL(us.REALNAME,ind.REALNAME) LIKE
+				CONCAT(CONCAT('%',#{realName}),'%')
+			</if>
+			
+		</where>
+		ORDER BY
+		<if test="sort != null and sort != '' and order != null and order != ''">
+			${sort} ${order},
+		</if>
+		ORDERDATE desc
+		limit ${begin}, ${limit}
+	</select>
+
+	<select id="listPageCount" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		SELECT COUNT(1)
+		FROM
+		<include refid="pms_indent" /> ind
+		LEFT JOIN USERS us ON ind.userId = us.id
+		<where>
+			<if test="id != null and id != ''">
+				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
+			</if>
+			<if test="indentType != null and indentType != ''">
+				AND INDENTTYPE = ${indentType}
+			</if>
+			<if test="indentType == null and types != null">
+				AND INDENTTYPE IN
+				<foreach collection="types" open="(" close=")" item="item"
+						separator=",">
+						#{item}
+				</foreach>	
 			</if>
 			<if test="indent_tele != null and indent_tele != ''">
 				AND INDENT_TELE LIKE
@@ -90,38 +157,16 @@
 			<if test="employeeId != null  and employeeId != ''">
 				AND EMPLOYEEID = #{employeeId}
 			</if>
-		</where>
-		ORDER BY
-		<if test="sort != null and sort != '' and order != null and order != ''">
-			${sort} ${order},
-		</if>
-		ORDERDATE desc
-		limit ${begin}, ${limit}
-	</select>
-
-	<select id="listPageCount" parameterType="java.util.Map"
-		resultType="java.lang.Long">
-		SELECT COUNT(1)
-		FROM
-		<include refid="pms_indent" />
-		<where>
-			<if test="id != null and id != ''">
-				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
+			<if test="indentSource != null and indentSource != -1">
+				AND INDENTSOURCE = #{indentSource}
 			</if>
-			<if test="indentType != null and indentType != ''">
-				AND INDENTTYPE = ${indentType}
+			<if test="userCompany != null  and userCompany != ''">
+				AND IFNULL(us.userCompany,ind.USERCOMPANY) LIKE
+				CONCAT(CONCAT('%',#{userCompany}),'%')
 			</if>
-			<if test="indent_tele != null and indent_tele != ''">
-				AND INDENT_TELE LIKE
-				CONCAT(CONCAT('%',#{indent_tele}),'%')
-			</if>
-			<if test="beginTime != null and beginTime != '' ">
-				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &gt;=
-				#{beginTime}
-			</if>
-			<if test="endTime != null  and endTime != ''">
-				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;=
-				#{endTime}
+			<if test="realName != null  and realName != ''">
+				AND IFNULL(us.REALNAME,ind.REALNAME) LIKE
+				CONCAT(CONCAT('%',#{realName}),'%')
 			</if>
 		</where>
 	</select>
@@ -145,6 +190,13 @@
 			<if test="indentType != null and indentType != ''">
 				AND INDENTTYPE = ${indentType}
 			</if>
+			<if test="indentType == null and types != null">
+				AND INDENTTYPE IN
+				<foreach collection="types" open="(" close=")" item="item"
+						separator=",">
+						#{item}
+				</foreach>	
+			</if>
 			<if test="indent_tele != null and indent_tele != ''">
 				AND INDENT_TELE LIKE
 				CONCAT(CONCAT('%',#{indent_tele}),'%')
@@ -156,6 +208,12 @@
 			<if test="endTime != null  and endTime != ''">
 				AND DATE_FORMAT(orderDate,'%Y-%m-%d') &lt;=
 				#{endTime}
+			</if>
+			<if test="employeeId != null  and employeeId != ''">
+				AND EMPLOYEEID = #{employeeId}
+			</if>
+			<if test="indentSource != null and indentSource != -1">
+				AND INDENTSOURCE = #{indentSource}
 			</if>
 		</where>
 		ORDER BY
@@ -180,7 +238,12 @@
 			PRODUCTID,
 			INDENTPRICE,
 			TEAMID,
-			ORDERDATE
+			ORDERDATE,
+			INDENTSOURCE,
+			REFERRERID,
+			EMPLOYEEID,
+			USERCOMPANY,
+			REALNAME
 		) VALUES (
 			#{indentName},
 			#{indentNum},
@@ -193,7 +256,12 @@
 			${productId},
 			${indentPrice},
 			${teamId},
-			CURRENT_TIMESTAMP
+			CURRENT_TIMESTAMP,
+			#{indentSource},
+			${referrerId},
+			#{employeeId},
+			#{userCompany},
+			#{realName}
 		)
 	</insert>
 	<insert id="saveOrder" parameterType="PmsIndent"
@@ -209,7 +277,12 @@
 			SECOND,
 			INDENT_TELE,
 			INDENT_RECOMMENT,
-			SALESMANUNIQUEID
+			SALESMANUNIQUEID,
+			INDENTSOURCE,
+			REFERRERID,
+			EMPLOYEEID,
+			USERCOMPANY,
+			REALNAME
 		) VALUES (
 			#{indentName},
 			${teamId},
@@ -219,7 +292,12 @@
 			${second},
 			#{indent_tele},
 			#{indent_recomment},
-			#{salesmanUniqueId}
+			#{salesmanUniqueId},
+			#{indentSource},
+			#{referrerId},
+			#{employeeId},
+			#{userCompany},
+			#{realName}
 		)
 	</insert>
 	<update id="update" parameterType="PmsIndent">
@@ -260,7 +338,13 @@
 				CSRecomment = #{cSRecomment},
 			</if>
 			<if test="pMRecomment != null and pMRecomment !=''">
-				PMRecomment = #{pMRecomment}
+				PMRecomment = #{pMRecomment},
+			</if>
+			<if test="indentSource != null and indentSource != -1">
+				indentSource = #{indentSource},
+			</if>
+			<if test="referrerId != null">
+				referrerId = #{referrerId},
 			</if>
 		</set>
 		<where>
@@ -362,7 +446,7 @@
 			INDENTID AS id,
 			INDENTNAME AS indentName,
 			INDENTPRICE AS indentPrice,
-			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			DATE_FORMAT(ORDERDATE, '%Y-%m-%d %T') AS orderDate,
 			INDENTTYPE AS indentType,
 			INDENT_TELE AS indent_tele,
 			INDENT_RECOMMENT AS indent_recomment,
@@ -370,17 +454,20 @@
 			SALESMANUNIQUEID AS salesmanUniqueId,
 			ind.EMPLOYEEID AS employeeId,
 			ind.USERID AS userId,
-			ind.USERCOMPANY AS userCompany,
-			ind.REALNAME AS realName,
-			ind.WECHAT AS wechat,
-			ind.POSITION AS position,
+			IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+			IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+			IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+			IF(ind.userId,us.position,ind.POSITION) AS position,
 			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId,
 			ind.CSRecomment AS cSRecomment,
-			ind.PMRecomment AS pMRecomment
+			ind.PMRecomment AS pMRecomment,
+			ind.indentSource AS indentSource,
+			ind.referrerId AS referrerId,
+	  		ind.pMId AS pMId
 		FROM
 		<include refid="pms_indent" />
 			ind
+		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
 			INDENTID  = #{id}
 		</where>
@@ -391,7 +478,7 @@
 			INDENTID AS id,
 			INDENTNAME AS indentName,
 			INDENTPRICE AS indentPrice,
-			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			DATE_FORMAT(ORDERDATE, '%Y-%m-%d %T') AS orderDate,
 			INDENTTYPE AS indentType,
 			INDENT_TELE AS indent_tele,
 			INDENT_RECOMMENT AS indent_recomment,
@@ -399,17 +486,20 @@
 			SALESMANUNIQUEID AS salesmanUniqueId,
 			ind.EMPLOYEEID AS employeeId,
 			ind.USERID AS userId,
-			ind.USERCOMPANY AS userCompany,
-			ind.REALNAME AS realName,
-			ind.WECHAT AS wechat,
-			ind.POSITION AS position,
+			IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+			IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+			IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+			IF(ind.userId,us.position,ind.POSITION) AS position,
 			ind.REQUIREID AS requireId,
-			ind.pMId AS pMId,
 			ind.CSRecomment AS cSRecomment,
-			ind.PMRecomment AS pMRecomment
+			ind.PMRecomment AS pMRecomment,
+			ind.indentSource AS indentSource,
+			ind.referrerId AS referrerId,
+	  		ind.pMId AS pMId
 		FROM
 		<include refid="pms_indent" />
 			ind
+		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
 			INDENTID = #{id}
 		</where>
