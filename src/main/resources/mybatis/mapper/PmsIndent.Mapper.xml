@@ -55,10 +55,10 @@
 				sale.SALESMANNAME AS salesmanName,
 				ind.EMPLOYEEID AS employeeId,
 				ind.USERID AS userId,
-				IFNULL(us.userCompany,ind.USERCOMPANY) AS userCompany,
-				IFNULL(us.REALNAME,ind.REALNAME) AS realName,
-				IFNULL(us.wechat,ind.WECHAT) AS wechat,
-				IFNULL(us.position,ind.POSITION) AS position,
+				IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+				IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+				IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+				IF(ind.userId,us.position,ind.POSITION) AS position,
 				ind.REQUIREID AS requireId,
 				ind.CSRecomment AS cSRecomment,
 				ind.PMRecomment AS pMRecomment,
@@ -105,11 +105,11 @@
 				AND INDENTSOURCE = #{indentSource}
 			</if>
 			<if test="userCompany != null  and userCompany != ''">
-				AND USERCOMPANY LIKE
+				AND IFNULL(us.userCompany,ind.USERCOMPANY) LIKE
 				CONCAT(CONCAT('%',#{userCompany}),'%')
 			</if>
 			<if test="realName != null  and realName != ''">
-				AND REALNAME LIKE
+				AND IFNULL(us.REALNAME,ind.REALNAME) LIKE
 				CONCAT(CONCAT('%',#{realName}),'%')
 			</if>
 			
@@ -126,7 +126,8 @@
 		resultType="java.lang.Long">
 		SELECT COUNT(1)
 		FROM
-		<include refid="pms_indent" />
+		<include refid="pms_indent" /> ind
+		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
 			<if test="id != null and id != ''">
 				INDENTID LIKE CONCAT(CONCAT('%',#{id}),'%')
@@ -160,11 +161,11 @@
 				AND INDENTSOURCE = #{indentSource}
 			</if>
 			<if test="userCompany != null  and userCompany != ''">
-				AND USERCOMPANY LIKE
+				AND IFNULL(us.userCompany,ind.USERCOMPANY) LIKE
 				CONCAT(CONCAT('%',#{userCompany}),'%')
 			</if>
 			<if test="realName != null  and realName != ''">
-				AND REALNAME LIKE
+				AND IFNULL(us.REALNAME,ind.REALNAME) LIKE
 				CONCAT(CONCAT('%',#{realName}),'%')
 			</if>
 		</where>
@@ -213,14 +214,6 @@
 			</if>
 			<if test="indentSource != null and indentSource != -1">
 				AND INDENTSOURCE = #{indentSource}
-			</if>
-			<if test="userCompany != null  and userCompany != ''">
-				AND USERCOMPANY LIKE
-				CONCAT(CONCAT('%',#{userCompany}),'%')
-			</if>
-			<if test="realName != null  and realName != ''">
-				AND REALNAME LIKE
-				CONCAT(CONCAT('%',#{realName}),'%')
 			</if>
 		</where>
 		ORDER BY
@@ -461,10 +454,10 @@
 			SALESMANUNIQUEID AS salesmanUniqueId,
 			ind.EMPLOYEEID AS employeeId,
 			ind.USERID AS userId,
-			IFNULL(us.userCompany,ind.USERCOMPANY) AS userCompany,
-			IFNULL(us.REALNAME,ind.REALNAME) AS realName,
-			IFNULL(us.wechat,ind.WECHAT) AS wechat,
-			IFNULL(us.position,ind.POSITION) AS position,
+			IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+			IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+			IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+			IF(ind.userId,us.position,ind.POSITION) AS position,
 			ind.REQUIREID AS requireId,
 			ind.CSRecomment AS cSRecomment,
 			ind.PMRecomment AS pMRecomment,
@@ -493,10 +486,10 @@
 			SALESMANUNIQUEID AS salesmanUniqueId,
 			ind.EMPLOYEEID AS employeeId,
 			ind.USERID AS userId,
-			IFNULL(us.userCompany,ind.USERCOMPANY) AS userCompany,
-			IFNULL(us.REALNAME,ind.REALNAME) AS realName,
-			IFNULL(us.wechat,ind.WECHAT) AS wechat,
-			IFNULL(us.position,ind.POSITION) AS position,
+			IF(ind.userId,us.userCompany,ind.USERCOMPANY) AS userCompany,
+			IF(ind.userId,us.REALNAME,ind.REALNAME) AS realName,
+			IF(ind.userId,us.wechat,ind.WECHAT) AS wechat,
+			IF(ind.userId,us.position,ind.POSITION) AS position,
 			ind.REQUIREID AS requireId,
 			ind.CSRecomment AS cSRecomment,
 			ind.PMRecomment AS pMRecomment,
