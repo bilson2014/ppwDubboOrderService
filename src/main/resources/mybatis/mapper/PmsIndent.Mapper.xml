@@ -180,7 +180,8 @@
 			INDENT_TELE AS indent_tele,
 			INDENT_RECOMMENT AS indent_recomment,
 			INDENT_DESCRIPTION AS indent_description,
-			SALESMANUNIQUEID AS salesmanUniqueId
+			SALESMANUNIQUEID AS salesmanUniqueId,
+			CSRecomment AS cSRecomment
 		FROM
 		<include refid="pms_indent" />
 		<where>
