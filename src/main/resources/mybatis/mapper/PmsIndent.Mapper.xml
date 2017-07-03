@@ -260,7 +260,7 @@
 			${teamId},
 			CURRENT_TIMESTAMP,
 			#{indentSource},
-			${referrerId},
+			#{referrerId},
 			#{employeeId},
 			#{userCompany},
 			#{realName},
@@ -288,7 +288,8 @@
 			USERCOMPANY,
 			REALNAME,
 			CSRecomment,
-			PMRecomment
+			PMRecomment,
+			INDENTTYPE
 		) VALUES (
 			#{indentName},
 			${teamId},
@@ -305,7 +306,8 @@
 			#{userCompany},
 			#{realName},
 			#{cSRecomment},
-			#{pMRecomment}
+			#{pMRecomment},
+			#{indentType}
 		)
 	</insert>
 	<update id="update" parameterType="PmsIndent">
