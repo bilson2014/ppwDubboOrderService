@@ -416,7 +416,8 @@
 		UPDATE
 		<include refid="pms_indent" />
 		<set>
-			employeeId = #{employeeId}
+			employeeId = #{employeeId},
+			indentType = ${indentType}
 		</set>
 		<where>
 			INDENTID = #{indentId}

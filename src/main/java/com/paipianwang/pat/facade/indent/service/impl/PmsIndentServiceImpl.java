@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.paipianwang.pat.common.entity.DataGrid;
 import com.paipianwang.pat.common.entity.PageParam;
 import com.paipianwang.pat.facade.indent.entity.PmsIndent;
@@ -123,6 +124,14 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 
 	@Override
 	public long updateCustomerService(PmsIndent indent) {
+		PmsIndent originalIndent = biz.findIndentById(indent.getIndentId());
+		int type = originalIndent.getIndentType();
+		if(type == 0) {
+			// 新订单,则更改为 处理中 状态
+			indent.setIndentType(1);
+		} else {
+			indent.setIndentType(originalIndent.getIndentType());
+		}
 		return biz.updateCustomerService(indent);
 	}
 
