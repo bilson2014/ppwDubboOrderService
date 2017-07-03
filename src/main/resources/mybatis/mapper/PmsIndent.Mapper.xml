@@ -243,7 +243,9 @@
 			REFERRERID,
 			EMPLOYEEID,
 			USERCOMPANY,
-			REALNAME
+			REALNAME,
+			CSRecomment,
+			PMRecomment
 		) VALUES (
 			#{indentName},
 			#{indentNum},
@@ -258,10 +260,12 @@
 			${teamId},
 			CURRENT_TIMESTAMP,
 			#{indentSource},
-			${referrerId},
+			#{referrerId},
 			#{employeeId},
 			#{userCompany},
-			#{realName}
+			#{realName},
+			#{cSRecomment},
+			#{pMRecomment}
 		)
 	</insert>
 	<insert id="saveOrder" parameterType="PmsIndent"
@@ -282,7 +286,10 @@
 			REFERRERID,
 			EMPLOYEEID,
 			USERCOMPANY,
-			REALNAME
+			REALNAME,
+			CSRecomment,
+			PMRecomment,
+			INDENTTYPE
 		) VALUES (
 			#{indentName},
 			${teamId},
@@ -297,7 +304,10 @@
 			#{referrerId},
 			#{employeeId},
 			#{userCompany},
-			#{realName}
+			#{realName},
+			#{cSRecomment},
+			#{pMRecomment},
+			#{indentType}
 		)
 	</insert>
 	<update id="update" parameterType="PmsIndent">
