@@ -14,6 +14,7 @@
 		<result column="indentType" property="indentType" />
 		<result column="serviceId" property="serviceId" />
 		<result column="orderDate" property="orderDate" />
+		<result column="updateDate" property="updateDate" />
 		<result column="indentPrice" property="indentPrice" />
 		<result column="productId" property="productId" />
 		<result column="teamId" property="teamId" />
@@ -47,6 +48,7 @@
 				INDENTNAME AS indentName,
 				INDENTPRICE AS indentPrice,
 				DATE_FORMAT(ORDERDATE, '%Y-%m-%d %T') AS orderDate,
+				DATE_FORMAT(UPDATEDATE,'%Y-%m-%d %T') AS updateDate,
 				INDENTTYPE AS indentType,
 				INDENT_RECOMMENT AS indent_recomment,
 				INDENT_DESCRIPTION AS indent_description,
@@ -176,6 +178,7 @@
 			INDENTNAME AS indentName,
 			INDENTPRICE AS indentPrice,
 			DATE_FORMAT(ORDERDATE,'%Y-%m-%d %T') AS orderDate,
+			DATE_FORMAT(UPDATEDATE,'%Y-%m-%d %T') AS updateDate,
 			INDENTTYPE AS indentType,
 			INDENT_TELE AS indent_tele,
 			INDENT_RECOMMENT AS indent_recomment,
@@ -324,6 +327,7 @@
 			INDENT_RECOMMENT = #{indent_recomment},
 			INDENT_DESCRIPTION = #{indent_description},
 			SALESMANUNIQUEID = #{salesmanUniqueId},
+			UPDATEDATE = CURRENT_TIMESTAMP,
 			<if test="userId != null and userId !=''">
 				USERID = #{userId},			
 			</if>
@@ -380,7 +384,8 @@
 	<update id="changeIndentsType">
 		UPDATE
 		<include refid="pms_indent" />
-		SET INDENTTYPE = ${indentType}
+		SET INDENTTYPE = ${indentType},
+			UPDATEDATE = CURRENT_TIMESTAMP
 		<where>
 			INDENTID IN
 			<if test="array != null and array != ''">
@@ -391,6 +396,7 @@
 			</if>
 		</where>
 	</update>
+	
 	<select id="checkStatus" resultType="long">
 		SELECT COUNT(1)
 		FROM
@@ -400,24 +406,28 @@
 		</where>
 
 	</select>
+	
 	<update id="updateForCalculate">
 		UPDATE
 		<include refid="pms_indent" />
 		<set>
 			INDENT_RECOMMENT = #{indent_recomment},
 			INDENTPRICE = ${indentPrice},
-			ORDERDATE = CURRENT_TIMESTAMP
+			ORDERDATE = CURRENT_TIMESTAMP,
+			UPDATEDATE = CURRENT_TIMESTAMP
 		</set>
 		<where>
 			INDENTID = #{id}
 		</where>
 	</update>
+	
 	<update id="updateCustomerService">
 		UPDATE
 		<include refid="pms_indent" />
 		<set>
 			employeeId = #{employeeId},
-			indentType = ${indentType}
+			indentType = ${indentType},
+			UPDATEDATE = CURRENT_TIMESTAMP
 		</set>
 		<where>
 			INDENTID = #{indentId}
@@ -428,7 +438,8 @@
 		UPDATE
 		<include refid="pms_indent" />
 		<set>
-			INDENTTYPE = ${indentType}
+			INDENTTYPE = ${indentType},
+			UPDATEDATE = CURRENT_TIMESTAMP
 		</set>
 		<where>
 			INDENTID = #{indentId}
