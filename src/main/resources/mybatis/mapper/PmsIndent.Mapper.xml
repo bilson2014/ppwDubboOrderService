@@ -184,7 +184,8 @@
 			INDENT_RECOMMENT AS indent_recomment,
 			INDENT_DESCRIPTION AS indent_description,
 			SALESMANUNIQUEID AS salesmanUniqueId,
-			CSRecomment AS cSRecomment
+			CSRecomment AS cSRecomment,
+			INDENTSOURCE AS indentSource
 		FROM
 		<include refid="pms_indent" />
 		<where>
