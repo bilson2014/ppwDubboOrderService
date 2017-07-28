@@ -185,7 +185,15 @@
 			INDENT_DESCRIPTION AS indent_description,
 			SALESMANUNIQUEID AS salesmanUniqueId,
 			CSRecomment AS cSRecomment,
-			INDENTSOURCE AS indentSource
+			INDENTSOURCE AS indentSource,
+			USERID AS userId,
+			EMPLOYEEID AS employeeId,
+			PMID AS pMId,
+			WECHAT AS wechat,
+			POSITION AS position,
+			REFERRERID AS referrerId,
+			USERCOMPANY AS userCompany,
+			SECOND AS second
 		FROM
 		<include refid="pms_indent" />
 		<where>
