@@ -337,6 +337,7 @@
 			INDENT_DESCRIPTION = #{indent_description},
 			SALESMANUNIQUEID = #{salesmanUniqueId},
 			UPDATEDATE = CURRENT_TIMESTAMP,
+			referrerId = #{referrerId},
 			<if test="userId != null and userId !=''">
 				USERID = #{userId},			
 			</if>
@@ -366,9 +367,6 @@
 			</if>
 			<if test="indentSource != null and indentSource != -1">
 				indentSource = #{indentSource},
-			</if>
-			<if test="referrerId != null">
-				referrerId = #{referrerId},
 			</if>
 		</set>
 		<where>
