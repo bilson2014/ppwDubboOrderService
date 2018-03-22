@@ -71,8 +71,9 @@
 		<include refid="pms_indent" />
 		ind
 		LEFT JOIN
-		<include refid="pms_salesman" />
-		sale
+		( select salesmanName,uniqueId, MAX(createDate) from <include refid="pms_salesman" />
+		 group by uniqueId) as sale
+		
 		ON ind.salesmanUniqueId = sale.uniqueId
 		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
