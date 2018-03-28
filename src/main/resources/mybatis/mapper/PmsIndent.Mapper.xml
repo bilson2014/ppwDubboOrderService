@@ -71,8 +71,9 @@
 		<include refid="pms_indent" />
 		ind
 		LEFT JOIN
-		<include refid="pms_salesman" />
-		sale
+		( select salesmanName,uniqueId, MAX(createDate) from <include refid="pms_salesman" />
+		 group by uniqueId) as sale
+		
 		ON ind.salesmanUniqueId = sale.uniqueId
 		LEFT JOIN USERS us ON ind.userId = us.id
 		<where>
@@ -193,7 +194,8 @@
 			POSITION AS position,
 			REFERRERID AS referrerId,
 			USERCOMPANY AS userCompany,
-			SECOND AS second
+			SECOND AS second,
+			REALNAME AS realName
 		FROM
 		<include refid="pms_indent" />
 		<where>
@@ -337,6 +339,7 @@
 			INDENT_DESCRIPTION = #{indent_description},
 			SALESMANUNIQUEID = #{salesmanUniqueId},
 			UPDATEDATE = CURRENT_TIMESTAMP,
+			referrerId = #{referrerId},
 			<if test="userId != null and userId !=''">
 				USERID = #{userId},			
 			</if>
@@ -366,9 +369,6 @@
 			</if>
 			<if test="indentSource != null and indentSource != -1">
 				indentSource = #{indentSource},
-			</if>
-			<if test="referrerId != null">
-				referrerId = #{referrerId},
 			</if>
 		</set>
 		<where>
