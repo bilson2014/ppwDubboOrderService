@@ -1,5 +1,6 @@
 package com.paipianwang.pat.facade.indent.service.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.paipianwang.pat.common.core.dao.BaseDao;
@@ -39,16 +40,18 @@ public interface PmsIndentDao extends BaseDao<PmsIndent> {
 	 * 
 	 * @param salesmanUniqueId
 	 *            某人唯一标识
+	 * @param indentTypes
 	 */
-	long countBySalesmanUniqueId(String salesmanUniqueId);
+	long countBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes);
 
 	/**
 	 * 查询某人订单总金额
 	 * 
 	 * @param salesmanUniqueId
 	 *            某人唯一标识
+	 * @param indentTypes
 	 */
-	Double sumPriceBySalesmanUniqueId(String salesmanUniqueId);
+	Double sumPriceBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes);
 
 	/**
 	 * 更新订单客服

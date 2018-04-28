@@ -81,16 +81,18 @@ public class PmsIndentBiz {
 	/**
 	 * 查询某人订单总数
 	 * @param salesmanUniqueId 某人唯一标识
+	 * @param indentTypes 
 	 */
-	public long countBySalesmanUniqueId(String salesmanUniqueId) {
-		return pmsIndentDao.countBySalesmanUniqueId(salesmanUniqueId);
+	public long countBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes) {
+		return pmsIndentDao.countBySalesmanUniqueId(salesmanUniqueId,indentTypes);
 	}
 	/**
 	 * 查询某人订单总金额
 	 * @param salesmanUniqueId 某人唯一标识
+	 * @param indentTypes 
 	 */
-	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
-		return pmsIndentDao.sumPriceBySalesmanUniqueId(salesmanUniqueId);
+	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes) {
+		return pmsIndentDao.sumPriceBySalesmanUniqueId(salesmanUniqueId,indentTypes);
 	}
 	/**
 	 * 更新订单客服

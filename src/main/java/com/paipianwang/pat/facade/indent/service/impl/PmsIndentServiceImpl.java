@@ -107,8 +107,8 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	 *            某人唯一标识
 	 */
 	@Override
-	public long countBySalesmanUniqueId(String salesmanUniqueId) {
-		return biz.countBySalesmanUniqueId(salesmanUniqueId);
+	public long countBySalesmanUniqueId(String salesmanUniqueId,List<Integer> indentTypes) {
+		return biz.countBySalesmanUniqueId(salesmanUniqueId,indentTypes);
 	}
 
 	/**
@@ -118,8 +118,8 @@ public class PmsIndentServiceImpl implements PmsIndentFacade {
 	 *            某人唯一标识
 	 */
 	@Override
-	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
-		return biz.sumPriceBySalesmanUniqueId(salesmanUniqueId);
+	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId,List<Integer> indentTypes) {
+		return biz.sumPriceBySalesmanUniqueId(salesmanUniqueId,indentTypes);
 	}
 
 	@Override

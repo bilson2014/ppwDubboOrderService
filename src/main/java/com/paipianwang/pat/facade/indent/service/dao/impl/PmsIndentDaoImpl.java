@@ -1,5 +1,7 @@
 package com.paipianwang.pat.facade.indent.service.dao.impl;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -67,13 +69,19 @@ public class PmsIndentDaoImpl extends BaseDaoImpl<PmsIndent> implements PmsInden
 	}
 
 	@Override
-	public long countBySalesmanUniqueId(String salesmanUniqueId) {
-		return sessionTemplate.selectOne(getStatement(SQL_COUNT_SALEMAN), salesmanUniqueId);
+	public long countBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes) {
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("salesmanUniqueId", salesmanUniqueId);
+		map.put("indentTypes", indentTypes);
+		return sessionTemplate.selectOne(getStatement(SQL_COUNT_SALEMAN), map);
 	}
 
 	@Override
-	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId) {
-		return sessionTemplate.selectOne(getStatement(SQL_SUMPRICE_SALESMAN), salesmanUniqueId);
+	public Double sumPriceBySalesmanUniqueId(String salesmanUniqueId, List<Integer> indentTypes) {
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("salesmanUniqueId", salesmanUniqueId);
+		map.put("indentTypes", indentTypes);
+		return sessionTemplate.selectOne(getStatement(SQL_SUMPRICE_SALESMAN), map);
 	}
 
 	@Override

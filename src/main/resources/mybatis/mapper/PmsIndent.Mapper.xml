@@ -260,7 +260,8 @@
 			USERCOMPANY,
 			REALNAME,
 			CSRecomment,
-			PMRecomment
+			PMRecomment,
+			WECHAT
 		) VALUES (
 			#{indentName},
 			#{indentNum},
@@ -280,7 +281,8 @@
 			#{userCompany},
 			#{realName},
 			#{cSRecomment},
-			#{pMRecomment}
+			#{pMRecomment},
+			#{wechat}
 		)
 	</insert>
 	<insert id="saveOrder" parameterType="PmsIndent"
@@ -304,7 +306,8 @@
 			REALNAME,
 			CSRecomment,
 			PMRecomment,
-			INDENTTYPE
+			INDENTTYPE,
+			WECHAT
 		) VALUES (
 			#{indentName},
 			${teamId},
@@ -322,7 +325,8 @@
 			#{realName},
 			#{cSRecomment},
 			#{pMRecomment},
-			#{indentType}
+			#{indentType},
+			#{wechat}
 		)
 	</insert>
 	<update id="update" parameterType="PmsIndent">
@@ -461,6 +465,13 @@
 		<include refid="pms_indent" />
 		<where>
 			SALESMANUNIQUEID = #{salesmanUniqueId}
+			
+			<if test="indentTypes != null">
+				AND INDENTTYPE IN 
+				<foreach collection="indentTypes" open="(" close=")" item="item" separator=",">
+					#{item}
+				</foreach>
+			</if>
 		</where>
 	</select>
 
@@ -470,6 +481,13 @@
 		<include refid="pms_indent" />
 		<where>
 			SALESMANUNIQUEID = #{salesmanUniqueId}
+			
+			<if test="indentTypes != null">
+				AND INDENTTYPE IN 
+				<foreach collection="indentTypes" open="(" close=")" item="item" separator=",">
+					#{item}
+				</foreach>
+			</if>
 		</where>
 	</select>
 	
