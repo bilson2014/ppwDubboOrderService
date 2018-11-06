@@ -333,17 +333,21 @@
 		UPDATE
 		<include refid="pms_indent" />
 		<set>
-			INDENTNAME = #{indentName},
-			SECOND = #{second},
-			INDENTPRICE = ${indentPrice},
+			INDENTNAME = #{indentName},					
 			INDENTTYPE = ${indentType},
 			INDENT_TELE =#{indent_tele},
 			ORDERDATE = DATE_FORMAT(#{orderDate},'%Y-%m-%d %T'),
 			INDENT_RECOMMENT = #{indent_recomment},
-			INDENT_DESCRIPTION = #{indent_description},
-			SALESMANUNIQUEID = #{salesmanUniqueId},
+			INDENT_DESCRIPTION = #{indent_description},	
 			UPDATEDATE = CURRENT_TIMESTAMP,
-			referrerId = #{referrerId},
+			referrerId = #{referrerId},	
+			SECOND = #{second},
+			<if test="indentPrice != null and indentPrice !=0">
+				INDENTPRICE = ${indentPrice},
+			</if>
+			<if test="salesmanUniqueId != null and salesmanUniqueId !=''">
+				SALESMANUNIQUEID = #{salesmanUniqueId},
+			</if>
 			<if test="userId != null and userId !=''">
 				USERID = #{userId},			
 			</if>
